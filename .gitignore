@@ -1,0 +1,7 @@
+*.swp
+*.swo
+
+.ssh/
+.tmp/
+
+/kub3lo.ini
