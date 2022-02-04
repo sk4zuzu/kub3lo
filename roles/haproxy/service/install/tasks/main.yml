@@ -1,0 +1,9 @@
+---
+- name: install haproxy
+  apk:
+    name: haproxy
+    state: present
+  register: apk_haproxy
+  until: apk_haproxy is success
+  retries: 12
+  delay: 5

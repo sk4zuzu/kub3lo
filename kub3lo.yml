@@ -1,0 +1,50 @@
+---
+- hosts: bastion
+  roles:
+    - role: bastion/openssh/configure
+      delegate_to: localhost
+      become: false
+      tags: [bastion]
+
+- hosts: all
+  pre_tasks:
+    - set_fact:
+        k3s_version: >-
+          {{ k3s_version | d('1.23.3') }}
+        helm_version: >-
+          {{ helm_version | d('3.8.0') }}
+
+- hosts: master:compute
+  roles:
+    - role: python3/package/install
+
+- hosts: master:compute
+  gather_facts: true
+  gather_subset: [network]
+  roles:
+    - role: network/gather
+    - role: haproxy/service/install
+    - role: haproxy/service/configure
+  post_tasks:
+    - meta: flush_handlers
+
+- hosts: master
+  roles:
+    - role: master/k3s/install
+
+- hosts: master
+  serial: 1
+  roles:
+    - role: master/k3s/bootstrap
+      when: inventory_hostname == groups.master[0]
+    - role: master/k3s/replicate
+      when: inventory_hostname != groups.master[0]
+
+- hosts: compute
+  roles:
+    - role: compute/k3s/install
+    - role: compute/k3s/bootstrap
+
+- hosts: master
+  roles:
+    - role: master/helm/install

@@ -1,0 +1,8 @@
+---
+- import_tasks: "{{ playbook_dir }}/import/master/gather/hosts.yml"
+- import_tasks: "{{ playbook_dir }}/import/master/gather/fqdns.yml"
+- import_tasks: "{{ playbook_dir }}/import/master/gather/ipv4s.yml"
+
+- import_tasks: "{{ playbook_dir }}/import/compute/gather/hosts.yml"
+- import_tasks: "{{ playbook_dir }}/import/compute/gather/fqdns.yml"
+- import_tasks: "{{ playbook_dir }}/import/compute/gather/ipv4s.yml"

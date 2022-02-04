@@ -1,0 +1,5 @@
+---
+- name: start kub3lo service
+  service:
+    name: kub3lo
+    state: started

@@ -1,0 +1,26 @@
+Host {{ groups.bastion | first }}
+  Hostname {{ hostvars[groups.bastion | first].ansible_host | d(groups.bastion | first) }}
+  User {{ hostvars[groups.bastion | first].ansible_user }}
+  StrictHostKeyChecking no
+  UserKnownHostsFile /dev/null
+  ForwardAgent yes
+
+Host {{ cluster_name }}-proxy
+  Hostname {{ hostvars[groups.bastion | first].ansible_host | d(groups.bastion | first) }}
+  User {{ hostvars[groups.bastion | first].ansible_user }}
+  StrictHostKeyChecking no
+  UserKnownHostsFile /dev/null
+  ForwardAgent yes
+  LocalForward 8686 {{ groups.master | first }}:8686
+
+{% for host in (groups.master + groups.compute) | unique -%}
+
+Host {{ hostvars[host].inventory_hostname }}
+  Hostname {{ hostvars[host].ansible_host | d(hostvars[host].inventory_hostname) }}
+  User {{ hostvars[host].ansible_user }}
+  StrictHostKeyChecking no
+  UserKnownHostsFile /dev/null
+  ForwardAgent yes
+  ProxyJump {{ groups.bastion | first }}
+
+{% endfor %}

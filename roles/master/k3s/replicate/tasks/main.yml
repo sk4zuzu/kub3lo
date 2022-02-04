@@ -1,0 +1,30 @@
+---
+- import_tasks: "{{ playbook_dir }}/import/master/wait/readyz.yml"
+
+- name: join k3s
+  environment:
+    K3S_TOKEN: kub3lo
+    AWK_SCRIPT: |
+      BEGIN { IGNORECASE = 1; ping = 1; ping_max = 6 } # 6 * 5s
+      ping > ping_max { exit }
+      /level=debug/ && /ping/ { print $0 " " ping++ "/" ping_max; next }
+      { ping = 1; print }
+  shell: |
+    set -o errexit -o pipefail
+    timeout 120s /usr/local/bin/k3s server \
+    --debug \
+    --server https://kub3lo-disco:8686 \
+    --node-taint CriticalAddonsOnly=true:NoExecute \
+    |& awk "$AWK_SCRIPT"
+  args:
+    executable: /bin/bash
+    creates: /etc/rancher/k3s/k3s.yaml
+  register: shell_join_k3s
+  failed_when:
+    - shell_join_k3s.rc != 0
+    - shell_join_k3s.rc != 141 # SIGPIPE
+
+- name: start kub3lo service
+  service:
+    name: kub3lo
+    state: started
