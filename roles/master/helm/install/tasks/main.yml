@@ -25,6 +25,20 @@
         path: /usr/local/bin/helm
         mode: u=rwx,go=rx
 
+- name: ensure ~/.kube/config points to /etc/rancher/k3s/k3s.yaml
+  file:
+    dest: "{{ item.dest }}"
+    state: "{{ item.state }}"
+    src: "{{ item.src | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop:
+    - dest: ~/.kube/
+      state: directory
+      mode: u=rwx,go=
+    - dest: ~/.kube/config
+      state: link
+      src: /etc/rancher/k3s/k3s.yaml
+
 - name: ensure stable repo is present
   shell: |
     helm repo add stable \
