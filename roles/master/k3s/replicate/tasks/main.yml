@@ -1,28 +1,53 @@
 ---
 - import_tasks: "{{ playbook_dir }}/import/master/wait/readyz.yml"
 
-- name: join k3s
-  environment:
-    K3S_TOKEN: kub3lo
-    AWK_SCRIPT: |
-      BEGIN { IGNORECASE = 1; ping = 1; ping_max = 6 } # 6 * 5s
-      ping > ping_max { exit }
-      /level=debug/ && /ping/ { print $0 " " ping++ "/" ping_max; next }
-      { ping = 1; print }
-  shell: |
-    set -o errexit -o pipefail
-    timeout 120s /usr/local/bin/k3s server \
-    --debug \
-    --server https://kub3lo-disco:8686 \
-    --node-taint CriticalAddonsOnly=true:NoExecute \
-    |& awk "$AWK_SCRIPT"
-  args:
-    executable: /bin/bash
-    creates: /etc/rancher/k3s/k3s.yaml
-  register: shell_join_k3s
-  failed_when:
-    - shell_join_k3s.rc != 0
-    - shell_join_k3s.rc != 141 # SIGPIPE
+- name: try to join k3s
+  block:
+    - name: join k3s
+      environment:
+        K3S_TOKEN: kub3lo
+        AWK_SCRIPT: |
+          BEGIN { IGNORECASE = 1; ping = 1; ping_max = 6 } # 6 * 5s
+          ping > ping_max { exit }
+          /level=debug/ && /ping/ { print $0 " " ping++ "/" ping_max; next }
+          { ping = 1; print }
+      shell: |
+        set -o errexit -o pipefail
+        timeout 120s /usr/local/bin/k3s server \
+        --debug \
+        --server https://kub3lo-disco:8686 \
+        --node-taint CriticalAddonsOnly=true:NoExecute \
+        |& awk "$AWK_SCRIPT"
+      args:
+        executable: /bin/bash
+        creates: /etc/rancher/k3s/k3s.yaml
+      register: shell_join_k3s
+      failed_when:
+        - shell_join_k3s.rc != 0
+        - shell_join_k3s.rc != 141 # SIGPIPE
+  rescue:
+    - name: remember original error
+      set_fact:
+        failed_result: "{{ ansible_failed_result }}"
+
+    - name: cleanup local k3s (to enable manual retry)
+      shell: |
+        set -o errexit -o pipefail
+
+        rm -r /etc/rancher/k3s/
+
+        find /var/lib/rancher/k3s/ \( -type f -or -type l \) -and -not -name 'k3s-airgap-images-*.tar' -print0 \
+        | xargs -0r -n1 rm
+
+        find /var/lib/rancher/k3s/ -type d -print0 \
+        | sort -zr \
+        | xargs -0r -n1 rmdir --ignore-fail-on-non-empty
+      args:
+        executable: /bin/bash
+
+    - name: raise original error
+      fail:
+        msg: "{{ failed_result }}"
 
 - name: start kub3lo service
   service:
