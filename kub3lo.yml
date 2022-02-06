@@ -48,3 +48,8 @@
 - hosts: master
   roles:
     - role: master/helm/install
+
+- hosts: master[0]
+  roles:
+    - role: master/kubeconfig/fetch
+      tags: [kubeconfig]

@@ -18,6 +18,16 @@ all: kub3lo
 kub3lo:
 	cd $(SELF)/ && ansible-playbook -v -i $(INVENTORY) kub3lo.yml
 
+.PHONY: proxy
+
+proxy:
+	ssh -F $(SELF)/.ssh/config $(NAME)-proxy -N
+
+.PHONY: kubeconfig
+
+kubeconfig:
+	@echo export KUBECONFIG=$(SELF)/.tmp/$(NAME)/kubeconfig
+
 .PHONY: b become
 
 b become:

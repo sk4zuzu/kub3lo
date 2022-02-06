@@ -1,0 +1,46 @@
+---
+- name: slurp kubeconfig
+  slurp:
+    path: /etc/rancher/k3s/k3s.yaml
+  register: slurp_k3s_yaml
+
+- name: parse kubeconfig
+  set_fact:
+    kubeconfig: >-
+      {{ slurp_k3s_yaml.content | b64decode | from_yaml }}
+
+- name: update clusters
+  set_fact:
+    kubeconfig_clusters: >-
+      {{ [kubeconfig.clusters[0] | combine(update, recursive=true)] + kubeconfig.clusters[1:] }}
+  vars:
+    update:
+      cluster:
+        server: https://localhost:8686
+
+- name: update kubeconfig
+  set_fact:
+    kubeconfig: >-
+      {{ kubeconfig | combine(update, recursive=true) }}
+  vars:
+    update:
+      clusters: >-
+        {{ kubeconfig_clusters }}
+
+- name: store kubeconfig
+  delegate_to: localhost
+  become: false
+  run_once: true
+  block:
+    - name: create temporary directory
+      file:
+        path: "{{ playbook_dir }}/.tmp/{{ cluster_name }}/"
+        state: directory
+        mode: u=rwx,go=
+
+    - name: store kubeconfig locally
+      copy:
+        dest: "{{ playbook_dir }}/.tmp/{{ cluster_name }}/kubeconfig"
+        mode: u=rw,go=
+        content: >-
+          {{ kubeconfig | to_nice_yaml(indent=2) }}
