@@ -32,13 +32,14 @@
   roles:
     - role: master/k3s/install
 
-- hosts: master
-  serial: 1
+- hosts: master[0]
   roles:
     - role: master/k3s/bootstrap
-      when: inventory_hostname == groups.master[0]
+
+- hosts: master[1:]
+  serial: 1
+  roles:
     - role: master/k3s/replicate
-      when: inventory_hostname != groups.master[0]
 
 - hosts: compute
   roles:
