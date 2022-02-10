@@ -23,9 +23,9 @@ kub3lo:
 proxy:
 	ssh -F $(SELF)/.ssh/config $(NAME)-proxy -N
 
-.PHONY: kubeconfig
+.PHONY: kc kubeconfig
 
-kubeconfig:
+kc kubeconfig:
 	@echo export KUBECONFIG=$(SELF)/.tmp/$(NAME)/kubeconfig
 
 .PHONY: b become
