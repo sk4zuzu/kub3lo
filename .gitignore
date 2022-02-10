@@ -4,4 +4,4 @@
 .ssh/
 .tmp/
 
-/kub3lo.ini
+/*.ini
