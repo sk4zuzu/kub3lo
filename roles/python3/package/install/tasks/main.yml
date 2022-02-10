@@ -8,3 +8,15 @@
   until: script_python3 is success
   retries: 12
   delay: 5
+
+- name: install extra packages
+  apk:
+    name:
+      - bash
+      - gawk
+      - tar
+    state: present
+  register: apk_extra
+  until: apk_extra is success
+  retries: 12
+  delay: 5
