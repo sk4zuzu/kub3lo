@@ -15,6 +15,7 @@
           {{ helm_version | d('3.8.0') }}
 
 - hosts: master:compute
+  strategy: linear
   roles:
     - role: python3/package/install
 
