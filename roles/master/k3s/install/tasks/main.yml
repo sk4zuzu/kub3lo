@@ -1,13 +1,13 @@
 ---
 - name: download k3s binary
   get_url:
-    url: "https://github.com/k3s-io/k3s/releases/download/v{{ k3s_version }}%2Bk3s1/k3s"
-    dest: "/usr/local/bin/k3s-{{ k3s_version }}"
+    url: "https://github.com/k3s-io/k3s/releases/download/{{ k3s_version }}/k3s"
+    dest: "/usr/local/bin/k3s-{{ k3s_release }}"
     mode: u=rwx,go=rx
 
 - name: create k3s symlinks
   file:
-    src: "k3s-{{ k3s_version }}"
+    src: "k3s-{{ k3s_release }}"
     dest: "{{ item }}"
     state: link
     mode: u=rwx,go=rx
