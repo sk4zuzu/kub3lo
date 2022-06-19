@@ -11,7 +11,7 @@ Host {{ cluster_name }}-proxy
   StrictHostKeyChecking no
   UserKnownHostsFile /dev/null
   ForwardAgent yes
-  LocalForward 8686 {{ hostvars[groups.master[0]].ansible_host | d(groups.master[0]) }}:8686
+  LocalForward 6969 {{ hostvars[groups.master[0]].ansible_host | d(groups.master[0]) }}:6969
 
 {% for host in (groups.master + groups.compute) | unique -%}
 
