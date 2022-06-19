@@ -19,14 +19,9 @@
 
 - name: install kub3lo service
   template:
-    src: "{{ item.path }}.j2"
-    dest: "/{{ item.path }}"
-    mode: "{{ item.mode }}"
-  loop:
-    - path: etc/conf.d/kub3lo
-      mode: u=rw,go=r
-    - path: etc/init.d/kub3lo
-      mode: u=rwx,go=rx
+    src: etc/init.d/kub3lo.j2
+    dest: /etc/init.d/kub3lo
+    mode: u=rwx,go=rx
 
 - name: enable kub3lo service
   service:

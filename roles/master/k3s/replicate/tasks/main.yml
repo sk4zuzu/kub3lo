@@ -1,6 +1,12 @@
 ---
 - import_tasks: "{{ playbook_dir }}/import/master/wait/readyz.yml"
 
+- name: configure kub3lo service
+  template:
+    src: etc/conf.d/kub3lo.j2
+    dest: /etc/conf.d/kub3lo
+    mode: u=rwx,go=rx
+
 - name: try to join k3s
   block:
     - name: join k3s
@@ -15,7 +21,7 @@
         set -o errexit -o pipefail
         timeout 120s /usr/local/bin/k3s server \
         --debug \
-        --server https://kub3lo-disco:8686 \
+        --server https://kub3lo-api:6969 \
         --node-taint CriticalAddonsOnly=true:NoExecute \
         |& awk "$AWK_SCRIPT"
       args:
