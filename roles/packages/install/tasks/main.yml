@@ -1,0 +1,19 @@
+---
+- name: install extra packages
+  package:
+    name: "{{ _packages[ansible_os_family] }}"
+    state: present
+  vars:
+    _packages:
+      Alpine:
+        - bash
+        - gawk
+        - tar
+      Debian:
+        - bash
+        - tar
+        - zstd
+  register: package_extra
+  until: package_extra is success
+  retries: 12
+  delay: 5
