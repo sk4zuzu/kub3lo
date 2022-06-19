@@ -1,13 +1,13 @@
 ---
 - name: slurp kubeconfig
   slurp:
-    path: /etc/rancher/k3s/k3s.yaml
-  register: slurp_k3s_yaml
+    path: "/etc/rancher/{{ k8s_distro }}/{{ k8s_distro }}.yaml"
+  register: slurp_kubeconfig_yaml
 
 - name: parse kubeconfig
   set_fact:
     kubeconfig: >-
-      {{ slurp_k3s_yaml.content | b64decode | from_yaml }}
+      {{ slurp_kubeconfig_yaml.content | b64decode | from_yaml }}
 
 - name: update clusters
   set_fact:
@@ -16,7 +16,7 @@
   vars:
     update:
       cluster:
-        server: https://localhost:8686
+        server: https://localhost:6969
 
 - name: update kubeconfig
   set_fact:
