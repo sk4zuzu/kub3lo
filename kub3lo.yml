@@ -9,12 +9,24 @@
 - hosts: all
   pre_tasks:
     - set_fact:
+        k8s_distro: >-
+          {{ k8s_distro | d('k3s') }}
+        helm_version: >-
+          {{ helm_version | d('3.8.2') }}
+
+    - set_fact:
         k3s_release: >-
           {{ k3s_release | d('1.23.7') }}
         k3s_version: >-
           {{ k3s_version | d('v1.23.7%2Bk3s1') }}
-        helm_version: >-
-          {{ helm_version | d('3.8.2') }}
+
+    - set_fact:
+        rke2_release: >-
+          {{ rke2_release | d('1.23.7') }}
+        rke2_version: >-
+          {{ rke2_version | d('v1.23.7%2Brke2r2') }}
+        kubectl_version: >-
+          {{ kubectl_version | d('1.23.7') }}
 
 - hosts: master:compute
   strategy: linear
@@ -25,6 +37,7 @@
   gather_facts: true
   gather_subset: [network]
   roles:
+    - role: packages/install
     - role: network/gather
     - role: haproxy/service/install
     - role: haproxy/service/configure
@@ -32,22 +45,27 @@
     - meta: flush_handlers
 
 - hosts: master
-  roles:
-    - role: master/k3s/install
+  tasks:
+    - name: "master/{{ k8s_distro }}/install"
+      include_role: { name: "master/{{ k8s_distro }}/install" }
 
 - hosts: master[0]
-  roles:
-    - role: master/k3s/bootstrap
+  tasks:
+    - name: "master/{{ k8s_distro }}/bootstrap"
+      include_role: { name: "master/{{ k8s_distro }}/bootstrap" }
 
 - hosts: master[1:]
   serial: 1
-  roles:
-    - role: master/k3s/replicate
+  tasks:
+    - name: "master/{{ k8s_distro }}/replicate"
+      include_role: { name: "master/{{ k8s_distro }}/replicate" }
 
 - hosts: compute
-  roles:
-    - role: compute/k3s/install
-    - role: compute/k3s/bootstrap
+  tasks:
+    - name: "compute/{{ k8s_distro }}/install"
+      include_role: { name: "compute/{{ k8s_distro }}/install" }
+    - name: "compute/{{ k8s_distro }}/bootstrap"
+      include_role: { name: "compute/{{ k8s_distro }}/bootstrap" }
 
 - hosts: master
   roles:

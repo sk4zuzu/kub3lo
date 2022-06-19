@@ -3,9 +3,10 @@ cluster_name=k3
 ansible_user=alpine
 ansible_python_interpreter=/usr/bin/python3
 registry=http://10.2.11.1:5000
+k8s_distro=k3s
 
 [bastion]
-b1 ansible_host=10.44.2.10
+k3 ansible_host=10.2.42.10
 
 [master]
 k3a1
