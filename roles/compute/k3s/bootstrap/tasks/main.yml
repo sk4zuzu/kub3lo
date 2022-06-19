@@ -1,4 +1,15 @@
 ---
+# sets the "node_token" fact
+- import_tasks: "{{ playbook_dir }}/import/master/slurp/token.yml"
+
+- name: configure kub3lo service
+  template:
+    src: etc/conf.d/kub3lo.j2
+    dest: /etc/conf.d/kub3lo
+    mode: u=rw,go=r
+  vars:
+    k3s_node_token: "{{ node_token }}"
+
 - name: start kub3lo service
   service:
     name: kub3lo

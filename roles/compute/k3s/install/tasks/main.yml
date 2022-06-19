@@ -19,25 +19,11 @@
 
 - import_tasks: "{{ playbook_dir }}/import/master/wait/readyz.yml"
 
-- name: read node token
-  delegate_to: "{{ groups.master[0] }}"
-  run_once: true
-  slurp:
-    path: /var/lib/rancher/k3s/server/node-token
-  register: slurp_token
-
 - name: install kub3lo service
   template:
-    src: "{{ item.path }}.j2"
-    dest: "/{{ item.path }}"
-    mode: "{{ item.mode }}"
-  loop:
-    - path: etc/conf.d/kub3lo
-      mode: u=rw,go=r
-    - path: etc/init.d/kub3lo
-      mode: u=rwx,go=rx
-  vars:
-    k3s_node_token: "{{ slurp_token.content | b64decode | trim }}"
+    src: etc/init.d/kub3lo.j2
+    dest: /etc/init.d/kub3lo
+    mode: u=rwx,go=rx
 
 - name: enable kub3lo service
   service:
