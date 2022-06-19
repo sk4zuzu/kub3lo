@@ -1,0 +1,36 @@
+---
+- name: stat /usr/local/bin/rke2
+  stat:
+    path: /usr/local/bin/rke2
+    get_attributes: false
+    get_checksum: false
+    get_mime: false
+  register: stat_usr_local_bin_rke2
+
+- when: not stat_usr_local_bin_rke2.stat.exists
+  block:
+    - name: download rke2 binary package
+      get_url:
+        url: "https://github.com/rancher/rke2/releases/download/{{ rke2_version }}/rke2.linux-amd64.tar.gz"
+        dest: &rke2_tgz "/var/tmp/rke2.linux-amd64.tar.gz"
+        mode: u=rw,go=
+
+    - name: extract rke2 binary package
+      unarchive:
+        remote_src: true
+        src: *rke2_tgz
+        dest: /usr/local/
+
+    - name: relaod systemd daemon
+      systemd:
+        daemon_reload: true
+
+- name: create /etc/rancher/rke2/
+  file:
+    path: /etc/rancher/rke2/
+    state: directory
+    mode: u=rwx,g=rx,o=
+
+- include_role: { name: master/kubectl/install }
+
+- import_tasks: "{{ playbook_dir }}/import/registry/setup.yml"

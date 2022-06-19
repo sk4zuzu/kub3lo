@@ -1,0 +1,7 @@
+---
+token: "{{ rke2_node_token }}"
+tls-san:
+  - kub3lo-disco
+  - kub3lo-api
+node-taint:
+  - CriticalAddonsOnly=true:NoExecute
