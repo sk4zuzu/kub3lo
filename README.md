@@ -1,24 +1,58 @@
-SIMPLE K3S HA CLUSTER DEPLOYMENT (ANSIBLE)
-==========================================
+SIMPLE RKE2/K3S HA CLUSTER DEPLOYMENT (ANSIBLE)
+===============================================
 
 ## 1. PURPOSE
 
 Just a devops exercise.
 
-To pre-create a pool of VMs for `kub3lo` you can try [sk4zuzu/vm-pool](https://github.com/sk4zuzu/vm-pool.git) :ok\_hand:.
+To pre-create a pool of VMs for `kub3lo` you can try: [sk4zuzu/vm-pool](https://github.com/sk4zuzu/vm-pool.git) :+1:.
 
-## 2. REUSE CLUSTER NODE AS A BASTION
+You can find packer scripts that pre-create airgapped images for `kub3lo` here: [sk4zuzu/vm-pool/packer/kub3lo](https://github.com/sk4zuzu/vm-pool/tree/master/packer/kub3lo) :ok\_hand:.
 
-Let's say we want to reuse `k3a1` (10.44.2.10) as a bastion host `b1` (please note, `k3a1` cannot be used directly):
+## 2. DEPLOY A `rke2` CLUSTER (UBUNTU 20.04)
+
+Edit `kub3lo.ini` file:
+
+```dosini
+[all:vars]
+cluster_name=k2
+ansible_user=ubuntu
+ansible_python_interpreter=/usr/bin/python3
+k8s_distro=rke2
+
+[bastion]
+k2 ansible_host=10.2.41.10
+
+[master]
+k2a1
+k2a2
+k2a3
+
+[compute]
+k2b1
+k2b2
+k2b3
+```
+
+Run provisioning:
+
+```shell
+$ make
+```
+
+## 3. DEPLOY A `k3s` CLUSTER (ALPINE 3.16.0)
+
+Edit `kub3lo.ini` file:
 
 ```dosini
 [all:vars]
 cluster_name=k3
 ansible_user=alpine
 ansible_python_interpreter=/usr/bin/python3
+k8s_distro=k3s
 
 [bastion]
-b1 ansible_host=10.44.2.10
+k3 ansible_host=10.2.42.10
 
 [master]
 k3a1
@@ -29,4 +63,10 @@ k3a3
 k3b1
 k3b2
 k3b3
+```
+
+Run provisioning:
+
+```shell
+$ make
 ```
