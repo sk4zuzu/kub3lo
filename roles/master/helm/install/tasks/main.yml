@@ -1,6 +1,10 @@
 ---
-- stat:
+- name: stat /usr/local/bin/helm
+  stat:
     path: /usr/local/bin/helm
+    get_attributes: false
+    get_checksum: false
+    get_mime: false
   register: stat_usr_local_bin_helm
 
 - when: not stat_usr_local_bin_helm.stat.exists
@@ -25,7 +29,7 @@
         path: /usr/local/bin/helm
         mode: u=rwx,go=rx
 
-- name: ensure ~/.kube/config points to /etc/rancher/k3s/k3s.yaml
+- name: create ~/.kube/config
   file:
     dest: "{{ item.dest }}"
     state: "{{ item.state }}"
@@ -37,7 +41,7 @@
       mode: u=rwx,go=
     - dest: ~/.kube/config
       state: link
-      src: /etc/rancher/k3s/k3s.yaml
+      src: "/etc/rancher/{{ k8s_distro }}/{{ k8s_distro }}.yaml"
 
 - name: ensure stable repo is present
   shell: |
