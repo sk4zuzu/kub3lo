@@ -1,14 +1,14 @@
 ---
-- name: wait for k3s to be ready
+- name: wait for k8s to be ready
   delegate_to: "{{ groups.master[0] }}"
   run_once: true
   uri:
-    url: "https://kub3lo-disco:8686/readyz"
-    client_key: /var/lib/rancher/k3s/server/tls/client-admin.key
-    client_cert: /var/lib/rancher/k3s/server/tls/client-admin.crt
+    url: "https://kub3lo-api:6969/readyz"
+    client_key: "/var/lib/rancher/{{ k8s_distro }}/server/tls/client-admin.key"
+    client_cert: "/var/lib/rancher/{{ k8s_distro }}/server/tls/client-admin.crt"
     validate_certs: false
     status_code: 200
-  register: uri_k3s_api_ready
-  until: uri_k3s_api_ready.status == 200
+  register: uri_k8s_api_ready
+  until: uri_k8s_api_ready.status == 200
   retries: 12
   delay: 5
