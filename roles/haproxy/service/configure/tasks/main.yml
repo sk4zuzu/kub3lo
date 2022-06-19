@@ -14,6 +14,14 @@
 - name: update /etc/hosts
   lineinfile:
     path: /etc/hosts
-    regex: " kub3lo-disco$"
+    regex: " {{ item }}$"
     line: >-
-      127.0.0.1 kub3lo-disco
+      127.0.0.1 {{ item }}
+  loop: "{{ _hosts[k8s_distro] }}"
+  vars:
+    _hosts:
+      k3s:
+        - kub3lo-api
+      rke2:
+        - kub3lo-disco
+        - kub3lo-api
