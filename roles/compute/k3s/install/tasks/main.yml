@@ -7,13 +7,15 @@
 
 - name: create k3s symlinks
   file:
-    src: "k3s-{{ k3s_release }}"
-    dest: "{{ item }}"
+    dest: "{{ item.dest }}"
+    src: "{{ item.src }}"
     state: link
     mode: u=rwx,go=rx
   loop:
-    - /usr/local/bin/k3s
-    - /usr/local/bin/kubectl
+    - dest: /usr/local/bin/k3s
+      src: "k3s-{{ k3s_release }}"
+    - dest: /usr/local/bin/kubectl
+      src: k3s
 
 - import_tasks: "{{ playbook_dir }}/import/registry/setup.yml"
 
