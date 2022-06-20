@@ -31,6 +31,12 @@
     state: directory
     mode: u=rwx,g=rx,o=
 
-- include_role: { name: master/kubectl/install }
+- name: create kubectl symlink
+  file:
+    dest: /usr/local/bin/kubectl
+    src: /var/lib/rancher/rke2/bin/kubectl
+    state: link
+    force: true
+    follow: false
 
 - import_tasks: "{{ playbook_dir }}/import/registry/setup.yml"

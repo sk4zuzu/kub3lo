@@ -23,8 +23,6 @@
           {{ rke2_release | d('1.23.7') }}
         rke2_version: >-
           {{ rke2_version | d('v1.23.7%2Brke2r2') }}
-        kubectl_version: >-
-          {{ kubectl_version | d('1.23.7') }}
 
 - hosts: master:compute
   strategy: linear
