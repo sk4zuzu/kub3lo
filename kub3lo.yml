@@ -11,8 +11,6 @@
     - set_fact:
         k8s_distro: >-
           {{ k8s_distro | d('k3s') }}
-        helm_version: >-
-          {{ helm_version | d('3.8.2') }}
 
     - set_fact:
         k3s_release: >-
@@ -66,10 +64,6 @@
       include_role: { name: "compute/{{ k8s_distro }}/install" }
     - name: "compute/{{ k8s_distro }}/bootstrap"
       include_role: { name: "compute/{{ k8s_distro }}/bootstrap" }
-
-- hosts: master
-  roles:
-    - role: master/helm/install
 
 - hosts: master[0]
   roles:
