@@ -65,7 +65,9 @@
     - name: "compute/{{ k8s_distro }}/bootstrap"
       include_role: { name: "compute/{{ k8s_distro }}/bootstrap" }
 
-- hosts: master[0]
+- hosts: master
   roles:
+    - role: master/kubeconfig/install
     - role: master/kubeconfig/fetch
+      run_once: true
       tags: [kubeconfig]

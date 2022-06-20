@@ -1,0 +1,14 @@
+---
+- name: create ~/.kube/config
+  file:
+    dest: "{{ item.dest }}"
+    state: "{{ item.state }}"
+    src: "{{ item.src | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop:
+    - dest: ~/.kube/
+      state: directory
+      mode: u=rwx,go=
+    - dest: ~/.kube/config
+      state: link
+      src: "/etc/rancher/{{ k8s_distro }}/{{ k8s_distro }}.yaml"
