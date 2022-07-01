@@ -7,6 +7,11 @@ set -o errexit -o nounset -o pipefail
 
 kubectl apply -f "https://github.com/rancher/system-upgrade-controller/releases/download/v${SUC_VERSION}/system-upgrade-controller.yaml"
 
+for RETRY in 9 8 7 6 5 4 3 2 1 0; do
+  if kubectl get crd/plans.upgrade.cattle.io --no-headers; then break; fi
+  sleep 5
+done && [[ "$RETRY" -gt 0 ]]
+
 kubectl apply -f- <<EOF
 ---
 # Server plan
