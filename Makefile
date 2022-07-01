@@ -1,7 +1,8 @@
 SHELL := $(shell which bash)
 SELF  := $(patsubst %/,%,$(dir $(abspath $(firstword $(MAKEFILE_LIST)))))
 
-INVENTORY ?= $(SELF)/kub3lo.ini
+I         ?= $(SELF)/kub3lo.ini
+INVENTORY ?= $(I)
 NAME      := $(shell grep -oP '^cluster_name\s*=\s*\K\w+$$' $(INVENTORY))
 
 ANSIBLE_STRATEGY_PLUGINS := $(realpath $(SELF)/../mitogen/ansible_mitogen/plugins/strategy)
