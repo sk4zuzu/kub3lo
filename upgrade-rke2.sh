@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 : "${SUC_VERSION:=0.9.1}"
-: "${RKE2_VERSION:=v1.24.1+rke2r2}"
+: "${RKE2_VERSION:=v1.24.4+rke2r1}"
 
 set -o errexit -o nounset -o pipefail
 

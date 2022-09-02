@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 : "${SUC_VERSION:=0.9.1}"
-: "${K3S_VERSION:=v1.24.1+k3s1}"
+: "${K3S_VERSION:=v1.24.4+k3s1}"
 
 set -o errexit -o nounset -o pipefail
 
