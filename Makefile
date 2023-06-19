@@ -5,9 +5,6 @@ I         ?= $(SELF)/kub3lo.ini
 INVENTORY ?= $(I)
 NAME      := $(shell grep -oP '^cluster_name\s*=\s*\K\w+$$' $(INVENTORY))
 
-ANSIBLE_STRATEGY_PLUGINS := $(realpath $(SELF)/../mitogen/ansible_mitogen/plugins/strategy)
-ANSIBLE_STRATEGY         := mitogen_linear
-
 export
 
 .PHONY: all

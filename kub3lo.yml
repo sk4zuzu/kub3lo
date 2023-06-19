@@ -14,15 +14,15 @@
 
     - set_fact:
         k3s_release: >-
-          {{ k3s_release | d('1.24.3') }}
+          {{ k3s_release | d('1.27.2') }}
         k3s_version: >-
-          {{ k3s_version | d('v1.24.3+k3s1') }}
+          {{ k3s_version | d('v1.27.2+k3s1') }}
 
     - set_fact:
         rke2_release: >-
-          {{ rke2_release | d('1.24.3') }}
+          {{ rke2_release | d('1.27.2') }}
         rke2_version: >-
-          {{ rke2_version | d('v1.24.3+rke2r1') }}
+          {{ rke2_version | d('v1.27.2+rke2r1') }}
 
 - hosts: master:compute
   strategy: linear
