@@ -1,46 +1,47 @@
 ---
-- name: slurp kubeconfig
-  ansible.builtin.slurp:
-    path: "/etc/rancher/{{ k8s_distro }}/{{ k8s_distro }}.yaml"
-  register: slurp_kubeconfig_yaml
-
-- name: parse kubeconfig
-  ansible.builtin.set_fact:
-    kubeconfig: >-
-      {{ slurp_kubeconfig_yaml.content | b64decode | from_yaml }}
-
-- name: update clusters
-  ansible.builtin.set_fact:
-    kubeconfig_clusters: >-
-      {{ [kubeconfig.clusters[0] | combine(update, recursive=true)] + kubeconfig.clusters[1:] }}
-  vars:
-    update:
-      cluster:
-        server: https://localhost:6969
-
-- name: update kubeconfig
-  ansible.builtin.set_fact:
-    kubeconfig: >-
-      {{ kubeconfig | combine(update, recursive=true) }}
-  vars:
-    update:
-      clusters: >-
-        {{ kubeconfig_clusters }}
-
-- name: store kubeconfig
-  delegate_to: localhost
-  become: false
-  run_once: true
+- run_once: true
   block:
-    - name: create temporary directory
-      ansible.builtin.file:
-        path: "{{ inventory_dir }}/.tmp/{{ cluster_name }}/"
-        state: directory
-        mode: u=rwx,go=
+    - name: slurp kubeconfig
+      ansible.builtin.slurp:
+        path: "/etc/rancher/{{ k8s_distro }}/{{ k8s_distro }}.yaml"
+      register: slurp_kubeconfig_yaml
 
-    - name: store kubeconfig locally
-      ansible.builtin.copy:
-        dest: "{{ inventory_dir }}/.tmp/{{ cluster_name }}/kubeconfig"
-        mode: u=rw,go=
-        content: >-
-          {{ kubeconfig | to_nice_yaml(indent=2) }}
+    - name: parse kubeconfig
+      ansible.builtin.set_fact:
+        kubeconfig: >-
+          {{ slurp_kubeconfig_yaml.content | b64decode | from_yaml }}
+
+    - name: update clusters
+      ansible.builtin.set_fact:
+        kubeconfig_clusters: >-
+          {{ [kubeconfig.clusters[0] | combine(update, recursive=true)] + kubeconfig.clusters[1:] }}
+      vars:
+        update:
+          cluster:
+            server: https://localhost:6969
+
+    - name: update kubeconfig
+      ansible.builtin.set_fact:
+        kubeconfig: >-
+          {{ kubeconfig | combine(update, recursive=true) }}
+      vars:
+        update:
+          clusters: >-
+            {{ kubeconfig_clusters }}
+
+    - name: store kubeconfig
+      delegate_to: localhost
+      become: false
+      block:
+        - name: create temporary directory
+          ansible.builtin.file:
+            path: "{{ inventory_dir }}/.tmp/{{ cluster_name }}/"
+            state: directory
+            mode: u=rwx,go=
+
+        - name: store kubeconfig locally
+          ansible.builtin.copy:
+            dest: "{{ inventory_dir }}/.tmp/{{ cluster_name }}/kubeconfig"
+            mode: u=rw,go=
+            content: >-
+              {{ kubeconfig | to_nice_yaml(indent=2) }}
