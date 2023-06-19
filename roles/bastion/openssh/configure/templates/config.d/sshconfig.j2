@@ -1,19 +1,25 @@
-Host {{ groups.bastion[0] }}
-  Hostname {{ hostvars[groups.bastion[0]].ansible_host | d(groups.bastion[0]) }}
-  User {{ hostvars[groups.bastion[0]].ansible_user }}
+{% set _bastion = groups[bastion_group | d('bastion')] %}
+
+Host {{ _bastion[0] }}
+  Hostname {{ hostvars[_bastion[0]].ansible_host | d(_bastion[0]) }}
+  User {{ hostvars[_bastion[0]].ansible_user }}
   StrictHostKeyChecking no
   UserKnownHostsFile /dev/null
   ForwardAgent yes
+
+{% set _master = groups[master_group | d('master')] %}
 
 Host {{ cluster_name }}-proxy
-  Hostname {{ hostvars[groups.bastion[0]].ansible_host | d(groups.bastion[0]) }}
-  User {{ hostvars[groups.bastion[0]].ansible_user }}
+  Hostname {{ hostvars[_bastion[0]].ansible_host | d(_bastion[0]) }}
+  User {{ hostvars[_bastion[0]].ansible_user }}
   StrictHostKeyChecking no
   UserKnownHostsFile /dev/null
   ForwardAgent yes
-  LocalForward 6969 {{ hostvars[groups.master[0]].ansible_host | d(groups.master[0]) }}:6969
+  LocalForward 6969 {{ hostvars[_master[0]].ansible_host | d(_master[0]) }}:6969
 
-{% for host in (groups.master + groups.compute) | unique -%}
+{% set _compute = groups[compute_group | d('compute')] %}
+
+{% for host in (_master + _compute) | unique -%}
 
 Host {{ hostvars[host].ansible_host | d(hostvars[host].inventory_hostname) }}
   Hostname {{ hostvars[host].ansible_host | d(hostvars[host].inventory_hostname) }}
@@ -21,6 +27,6 @@ Host {{ hostvars[host].ansible_host | d(hostvars[host].inventory_hostname) }}
   StrictHostKeyChecking no
   UserKnownHostsFile /dev/null
   ForwardAgent yes
-  ProxyJump {{ groups.bastion[0] }}
+  ProxyJump {{ _bastion[0] }}
 
 {% endfor %}

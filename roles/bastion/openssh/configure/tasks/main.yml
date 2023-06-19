@@ -1,12 +1,18 @@
 ---
 - ansible.builtin.assert:
-    that: bastion_inventory_hostname not in forbidden_inventory_hostnames
+    that: _bastion_inventory_hostname not in _forbidden_inventory_hostnames
     fail_msg: "bastion must not be a part of the cluster"
   vars:
-    bastion_inventory_hostname: >-
-      {{ groups.bastion | first }}
-    forbidden_inventory_hostnames: >-
-      {{ (groups.master + groups.compute) | unique }}
+    _bastion_inventory_hostname: >-
+      {{ _bastion[0] }}
+    _forbidden_inventory_hostnames: >-
+      {{ (_master + _compute) | unique }}
+    _bastion: >-
+      {{ groups[bastion_group | d('bastion')] }}
+    _master: >-
+      {{ groups[master_group | d('master')] }}
+    _compute: >-
+      {{ groups[compute_group | d('compute')] }}
 
 - name: create local .ssh directory tree
   ansible.builtin.file:
