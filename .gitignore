@@ -5,3 +5,6 @@
 .tmp/
 
 /*.ini
+/*.tar.gz
+
+/.galaxy-key

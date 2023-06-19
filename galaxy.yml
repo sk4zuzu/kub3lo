@@ -1,0 +1,28 @@
+---
+namespace: sk4zuzu
+name: kub3lo
+version: 0.0.2
+
+readme: README.md
+
+authors:
+- Michal Opala <sk4zuzu@gmail.com>
+description: SIMPLE RKE2/K3S HA CLUSTER DEPLOYMENT
+
+license: []
+license_file: LICENSE
+
+tags: []
+dependencies: {}
+
+repository: https://github.com/sk4zuzu/kub3lo
+documentation: https://github.com/sk4zuzu/kub3lo
+homepage: https://github.com/sk4zuzu/kub3lo
+issues: https://github.com/sk4zuzu/kub3lo/issues
+
+build_ignore:
+- .galaxy-key
+- .ssh
+- .tmp
+- '*.ini'
+- upgrade-*.sh
