@@ -1,8 +1,8 @@
 ---
-- import_role: { name: master/wait }
+- ansible.builtin.import_role: { name: master/wait }
 
 - name: configure kub3lo service
-  template:
+  ansible.builtin.template:
     src: etc/conf.d/kub3lo.j2
     dest: /etc/conf.d/kub3lo
     mode: u=rwx,go=rx
@@ -17,7 +17,7 @@
           ping > ping_max { exit }
           /level=debug/ && /ping/ { print $0 " " ping++ "/" ping_max; next }
           { ping = 1; print }
-      shell: |
+      ansible.builtin.shell: |
         set -o errexit -o pipefail
         timeout 120s /usr/local/bin/k3s server \
         --debug \
@@ -33,11 +33,11 @@
         - shell_join_k3s.rc != 141 # SIGPIPE
   rescue:
     - name: remember original error
-      set_fact:
+      ansible.builtin.set_fact:
         failed_result: "{{ ansible_failed_result }}"
 
     - name: cleanup local k3s (to enable manual retry)
-      shell: |
+      ansible.builtin.shell: |
         set -o errexit -o pipefail
 
         rm -r /etc/rancher/k3s/
@@ -52,10 +52,10 @@
         executable: /bin/bash
 
     - name: raise original error
-      fail:
+      ansible.builtin.fail:
         msg: "{{ failed_result }}"
 
 - name: start kub3lo service
-  service:
+  ansible.builtin.service:
     name: kub3lo
     state: started

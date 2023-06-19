@@ -2,7 +2,7 @@
 - name: wait for k8s to be ready
   delegate_to: "{{ groups.master[0] }}"
   run_once: true
-  uri:
+  ansible.builtin.uri:
     url: "https://kub3lo-api:6969/readyz"
     client_key: "/var/lib/rancher/{{ k8s_distro }}/server/tls/client-admin.key"
     client_cert: "/var/lib/rancher/{{ k8s_distro }}/server/tls/client-admin.crt"

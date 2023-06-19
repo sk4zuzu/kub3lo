@@ -1,10 +1,10 @@
 ---
-- set_fact:
+- ansible.builtin.set_fact:
     backend_servers: >-
       {{ master_hosts | zip(master_ipv4s) | list }}
 
 - name: render haproxy config
-  template:
+  ansible.builtin.template:
     dest: /etc/haproxy/haproxy.cfg
     src: etc/haproxy/haproxy.cfg.j2
     mode: u=rw,go=
@@ -12,7 +12,7 @@
     - restart haproxy
 
 - name: update /etc/hosts
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/hosts
     regex: " {{ item }}$"
     line: >-

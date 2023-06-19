@@ -1,6 +1,6 @@
 ---
 - name: stat /usr/local/bin/rke2
-  stat:
+  ansible.builtin.stat:
     path: /usr/local/bin/rke2
     get_attributes: false
     get_checksum: false
@@ -10,33 +10,33 @@
 - when: not stat_usr_local_bin_rke2.stat.exists
   block:
     - name: download rke2 binary package
-      get_url:
+      ansible.builtin.get_url:
         url: "https://github.com/rancher/rke2/releases/download/{{ rke2_version }}/rke2.linux-amd64.tar.gz"
         dest: &rke2_tgz "/var/tmp/rke2.linux-amd64.tar.gz"
         mode: u=rw,go=
 
     - name: extract rke2 binary package
-      unarchive:
+      ansible.builtin.unarchive:
         remote_src: true
         src: *rke2_tgz
         dest: /usr/local/
 
     - name: relaod systemd daemon
-      systemd:
+      ansible.builtin.systemd:
         daemon_reload: true
 
 - name: create /etc/rancher/rke2/
-  file:
+  ansible.builtin.file:
     path: /etc/rancher/rke2/
     state: directory
     mode: u=rwx,g=rx,o=
 
 - name: create kubectl symlink
-  file:
+  ansible.builtin.file:
     dest: /usr/local/bin/kubectl
     src: /var/lib/rancher/rke2/bin/kubectl
     state: link
     force: true
     follow: false
 
-- import_role: { name: registry }
+- ansible.builtin.import_role: { name: registry }

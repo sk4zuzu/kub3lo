@@ -1,9 +1,9 @@
 ---
 # set the "node_token" fact
-- import_role: { name: master/token }
+- ansible.builtin.import_role: { name: master/token }
 
 - name: configure kub3lo service
-  template:
+  ansible.builtin.template:
     src: etc/conf.d/kub3lo.j2
     dest: /etc/conf.d/kub3lo
     mode: u=rw,go=r
@@ -11,6 +11,6 @@
     k3s_node_token: "{{ node_token }}"
 
 - name: start kub3lo service
-  service:
+  ansible.builtin.service:
     name: kub3lo
     state: started

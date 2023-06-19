@@ -1,6 +1,6 @@
 ---
 - name: stat /etc/rancher/rke2/config.yaml
-  stat:
+  ansible.builtin.stat:
     path: /etc/rancher/rke2/config.yaml
     get_attributes: false
     get_checksum: false
@@ -10,7 +10,7 @@
 - when: not stat_etc_rancher_rke2_config_yaml.stat.exists
   block:
     - name: configure rke2-server service
-      template:
+      ansible.builtin.template:
         src: etc/rancher/rke2/config.yaml-initial.j2
         dest: /etc/rancher/rke2/config.yaml
         mode: u=rw,go=
@@ -18,16 +18,16 @@
         rke2_node_token: kub3lo
 
     - name: start rke2-server service
-      service:
+      ansible.builtin.service:
         name: rke2-server
         state: started
         enabled: true
 
     # set the "node_token" fact
-    - import_role: { name: master/token }
+    - ansible.builtin.import_role: { name: master/token }
 
     - name: normalize rke2 service config
-      template:
+      ansible.builtin.template:
         src: etc/rancher/rke2/config.yaml.j2
         dest: /etc/rancher/rke2/config.yaml
         mode: u=rw,go=
@@ -35,7 +35,7 @@
         rke2_node_token: "{{ node_token }}"
 
 - name: start rke2-server service
-  service:
+  ansible.builtin.service:
     name: rke2-server
     state: started
     enabled: true

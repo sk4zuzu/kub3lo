@@ -1,6 +1,6 @@
 ---
 - name: install haproxy
-  package:
+  ansible.builtin.package:
     name: haproxy
     state: present
   register: package_haproxy

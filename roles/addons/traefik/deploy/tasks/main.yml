@@ -1,6 +1,6 @@
 ---
 - name: stat Traefik helm chart tarball
-  stat:
+  ansible.builtin.stat:
     path: &traefik_tgz "/var/tmp/traefik-{{ traefik_chart_version }}.tgz"
     get_attributes: false
     get_checksum: false
@@ -8,19 +8,19 @@
   register: stat_traefik_tgz
 
 - name: download Traefik helm chart (directly)
-  get_url:
+  ansible.builtin.get_url:
     url: "https://helm.traefik.io/traefik/traefik-{{ traefik_chart_version }}.tgz"
     dest: *traefik_tgz
     mode: u=rw,go=
   when: not stat_traefik_tgz.stat.exists
 
 - name: slurp Traefik helm chart
-  slurp:
+  ansible.builtin.slurp:
     path: *traefik_tgz
   register: slurp_traefik_tgz
 
 - name: create Traefik HelmChart CRD object
-  copy:
+  ansible.builtin.copy:
     dest: "/var/lib/rancher/{{ k8s_distro }}/server/manifests/kub3lo-traefik.yaml"
     mode: u=rw,go=r
     content: |

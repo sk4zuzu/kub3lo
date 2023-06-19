@@ -1,6 +1,6 @@
 ---
 - name: install extra packages
-  package:
+  ansible.builtin.package:
     name: "{{ _packages[ansible_os_family] }}"
     state: present
   vars:

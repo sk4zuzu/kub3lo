@@ -3,13 +3,13 @@
   when: registry is defined
   block:
     - name: "create /etc/rancher/{{ k8s_distro }}/"
-      file:
+      ansible.builtin.file:
         path: "/etc/rancher/{{ k8s_distro }}/"
         state: directory
         mode: u=rwx,g=rx,o=
 
     - name: deploy registries.yaml
-      copy:
+      ansible.builtin.copy:
         dest: "/etc/rancher/{{ k8s_distro }}/registries.yaml"
         mode: u=rw,go=r
         content: |

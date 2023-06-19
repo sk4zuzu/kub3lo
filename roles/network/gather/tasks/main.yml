@@ -1,6 +1,6 @@
 ---
 - name: gather master hostnames, fqdns and ipv4s
-  set_fact:
+  ansible.builtin.set_fact:
     master_hosts: >-
       {{ groups.master | map('extract', hostvars, ['inventory_hostname_short']) | list }}
     master_fqdns: >-
@@ -9,7 +9,7 @@
       {{ groups.master | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | list }}
 
 - name: gather compute hostnames, fqdns and ipv4s
-  set_fact:
+  ansible.builtin.set_fact:
     compute_hosts: >-
       {{ groups.compute | map('extract', hostvars, ['inventory_hostname_short']) | list }}
     compute_fqdns: >-

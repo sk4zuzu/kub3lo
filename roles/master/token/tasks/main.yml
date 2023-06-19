@@ -2,10 +2,10 @@
 - name: read node token
   delegate_to: "{{ groups.master[0] }}"
   run_once: true
-  slurp:
+  ansible.builtin.slurp:
     path: "/var/lib/rancher/{{ k8s_distro }}/server/node-token"
   register: slurp_token
 
 - name: decode node token
-  set_fact:
+  ansible.builtin.set_fact:
     node_token: "{{ slurp_token.content | b64decode | trim }}"

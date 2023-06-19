@@ -1,6 +1,6 @@
 ---
 - name: create ~/.kube/config
-  file:
+  ansible.builtin.file:
     dest: "{{ item.dest }}"
     state: "{{ item.state }}"
     src: "{{ item.src | default(omit) }}"
