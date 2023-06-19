@@ -34,19 +34,3 @@ b become:
 ssh-%:
 	@echo NOTICE: if you have complex hostnames use "\"ssh -F .ssh/config <tab>\"" auto-completion instead
 	@ssh -F $(SELF)/.ssh/config $* $(BECOME_ROOT)
-
-.PHONY: metallb traefik
-
-metallb: METALLB_CHART_VERSION ?= 0.13.9
-metallb:
-	cd $(SELF)/ && ANSIBLE_ROLES_PATH=$(SELF)/roles/ ansible \
-	-e metallb_chart_version=$(METALLB_CHART_VERSION) \
-	-m include_role -a name=addons/metallb/deploy \
-	-i $(INVENTORY) master
-
-traefik: TRAEFIK_CHART_VERSION ?= 23.0.0
-traefik:
-	cd $(SELF)/ && ANSIBLE_ROLES_PATH=$(SELF)/roles/ ansible \
-	-e traefik_chart_version=$(TRAEFIK_CHART_VERSION) \
-	-m include_role -a name=addons/traefik/deploy \
-	-i $(INVENTORY) master

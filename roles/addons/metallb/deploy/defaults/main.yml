@@ -1,0 +1,3 @@
+---
+metallb_chart_version: "0.13.9"
+metallb_chart_enabled: false

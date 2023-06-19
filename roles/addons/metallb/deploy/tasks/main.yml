@@ -1,46 +1,48 @@
 ---
-- name: stat MetalLB helm chart tarball
-  ansible.builtin.stat:
-    path: &metallb_tgz "/var/tmp/metallb-{{ metallb_chart_version }}.tgz"
-    get_attributes: false
-    get_checksum: false
-    get_mime: false
-  register: stat_metallb_tgz
+- when: metallb_chart_enabled is truthy
+  block:
+    - name: stat MetalLB helm chart tarball
+      ansible.builtin.stat:
+        path: &metallb_tgz "/var/tmp/metallb-{{ metallb_chart_version }}.tgz"
+        get_attributes: false
+        get_checksum: false
+        get_mime: false
+      register: stat_metallb_tgz
 
-- name: download MetalLB helm chart (directly)
-  ansible.builtin.get_url:
-    url: "https://github.com/metallb/metallb/releases/download/metallb-chart-{{ metallb_chart_version }}/metallb-{{ metallb_chart_version }}.tgz"
-    dest: *metallb_tgz
-    mode: u=rw,go=
-  when: not stat_metallb_tgz.stat.exists
+    - name: download MetalLB helm chart (directly)
+      ansible.builtin.get_url:
+        url: "https://github.com/metallb/metallb/releases/download/metallb-chart-{{ metallb_chart_version }}/metallb-{{ metallb_chart_version }}.tgz"
+        dest: *metallb_tgz
+        mode: u=rw,go=
+      when: not stat_metallb_tgz.stat.exists
 
-- name: slurp MetalLB helm chart
-  ansible.builtin.slurp:
-    path: *metallb_tgz
-  register: slurp_metallb_tgz
+    - name: slurp MetalLB helm chart
+      ansible.builtin.slurp:
+        path: *metallb_tgz
+      register: slurp_metallb_tgz
 
-- name: create MetalLB HelmChart CRD object
-  ansible.builtin.copy:
-    dest: "/var/lib/rancher/{{ k8s_distro }}/server/manifests/kub3lo-metallb.yaml"
-    mode: u=rw,go=r
-    content: |
-      ---
-      {{ _namespace | to_nice_yaml(indent=2) }}
-      ---
-      {{ _helmchart | to_nice_yaml(indent=2) }}
-  vars:
-    _namespace:
-      apiVersion: v1
-      kind: Namespace
-      metadata:
-        name: metallb-system
-    _helmchart:
-      apiVersion: helm.cattle.io/v1
-      kind: HelmChart
-      metadata:
-        name: kub3lo-metallb
-        namespace: kube-system
-      spec:
-        targetNamespace: metallb-system
-        chartContent: >-
-          {{ slurp_metallb_tgz.content }}
+    - name: create MetalLB HelmChart CRD object
+      ansible.builtin.copy:
+        dest: "/var/lib/rancher/{{ k8s_distro }}/server/manifests/kub3lo-metallb.yaml"
+        mode: u=rw,go=r
+        content: |
+          ---
+          {{ _namespace | to_nice_yaml(indent=2) }}
+          ---
+          {{ _helmchart | to_nice_yaml(indent=2) }}
+      vars:
+        _namespace:
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: metallb-system
+        _helmchart:
+          apiVersion: helm.cattle.io/v1
+          kind: HelmChart
+          metadata:
+            name: kub3lo-metallb
+            namespace: kube-system
+          spec:
+            targetNamespace: metallb-system
+            chartContent: >-
+              {{ slurp_metallb_tgz.content }}

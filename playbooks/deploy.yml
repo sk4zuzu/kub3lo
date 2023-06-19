@@ -53,6 +53,11 @@
 
 - hosts: "{{ master_group | d('master') }}"
   roles:
+    - role: addons/metallb/deploy
+      tags: [addons]
+    - role: addons/traefik/deploy
+      tags: [addons]
+
     - role: master/kubeconfig/install
     - role: master/kubeconfig/fetch
       run_once: true
