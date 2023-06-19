@@ -1,8 +1,0 @@
----
-k8s_distro: k3s
-
-k3s_release: "1.27.2"
-k3s_version: "v{{ k3s_release }}+k3s1"
-
-rke2_release: "1.27.2"
-rke2_version: "v{{ rke2_release }}+rke2r1"
