@@ -1,5 +1,5 @@
 ---
-- hosts: bastion
+- hosts: "{{ bastion_group | d('bastion') }}"
   roles:
     - role: bastion/openssh/configure
       delegate_to: localhost
@@ -12,24 +12,23 @@
         k8s_distro: >-
           {{ k8s_distro | d('k3s') }}
 
-    - ansible.builtin.set_fact:
         k3s_release: >-
           {{ k3s_release | d('1.27.2') }}
         k3s_version: >-
           {{ k3s_version | d('v1.27.2+k3s1') }}
 
-    - ansible.builtin.set_fact:
         rke2_release: >-
           {{ rke2_release | d('1.27.2') }}
         rke2_version: >-
           {{ rke2_version | d('v1.27.2+rke2r1') }}
+      run_once: true
 
-- hosts: master:compute
+- hosts: "{{ master_group | d('master') }}:{{ compute_group | d('compute') }}"
   strategy: linear
   roles:
     - role: python3/package/install
 
-- hosts: master:compute
+- hosts: "{{ master_group | d('master') }}:{{ compute_group | d('compute') }}"
   gather_facts: true
   gather_subset: [network]
   roles:
@@ -40,30 +39,36 @@
   post_tasks:
     - ansible.builtin.meta: flush_handlers
 
-- hosts: master
+- hosts: "{{ master_group | d('master') }}"
   tasks:
     - name: "master/{{ k8s_distro }}/install"
-      ansible.builtin.include_role: { name: "master/{{ k8s_distro }}/install" }
+      ansible.builtin.include_role:
+        name: "master/{{ k8s_distro }}/install"
 
-- hosts: master[0]
+- hosts: "{{ master_group | d('master') }}[0]"
   tasks:
     - name: "master/{{ k8s_distro }}/bootstrap"
-      ansible.builtin.include_role: { name: "master/{{ k8s_distro }}/bootstrap" }
+      ansible.builtin.include_role:
+        name: "master/{{ k8s_distro }}/bootstrap"
 
-- hosts: master[1:]
+- hosts: "{{ master_group | d('master') }}[1:]"
   serial: 1
   tasks:
     - name: "master/{{ k8s_distro }}/replicate"
-      ansible.builtin.include_role: { name: "master/{{ k8s_distro }}/replicate" }
+      ansible.builtin.include_role:
+        name: "master/{{ k8s_distro }}/replicate"
 
-- hosts: compute
+- hosts: "{{ compute_group | d('compute') }}"
   tasks:
     - name: "compute/{{ k8s_distro }}/install"
-      ansible.builtin.include_role: { name: "compute/{{ k8s_distro }}/install" }
-    - name: "compute/{{ k8s_distro }}/bootstrap"
-      ansible.builtin.include_role: { name: "compute/{{ k8s_distro }}/bootstrap" }
+      ansible.builtin.include_role:
+        name: "compute/{{ k8s_distro }}/install"
 
-- hosts: master
+    - name: "compute/{{ k8s_distro }}/bootstrap"
+      ansible.builtin.include_role:
+        name: "compute/{{ k8s_distro }}/bootstrap"
+
+- hosts: "{{ master_group | d('master') }}"
   roles:
     - role: master/kubeconfig/install
     - role: master/kubeconfig/fetch
