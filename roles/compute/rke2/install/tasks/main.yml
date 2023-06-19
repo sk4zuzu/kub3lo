@@ -38,3 +38,5 @@
     state: link
     force: true
     follow: false
+
+- import_role: { name: registry }
