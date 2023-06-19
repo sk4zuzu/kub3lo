@@ -23,8 +23,8 @@
         state: started
         enabled: true
 
-    # sets the "node_token" fact
-    - import_tasks: "{{ playbook_dir }}/import/master/slurp/token.yml"
+    # set the "node_token" fact
+    - import_role: { name: master/token }
 
     - name: normalize rke2 service config
       template:
