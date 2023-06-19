@@ -1,5 +1,5 @@
 ---
-- when: traefik_chart_enabled is truthy
+- when: traefik_chart_enabled | bool is true
   block:
     - name: stat Traefik helm chart tarball
       ansible.builtin.stat:
@@ -11,7 +11,8 @@
 
     - name: download Traefik helm chart (directly)
       ansible.builtin.get_url:
-        url: "https://helm.traefik.io/traefik/traefik-{{ traefik_chart_version }}.tgz"
+        # https://helm.traefik.io/traefik/index.yaml
+        url: "https://traefik.github.io/charts/traefik/traefik-{{ traefik_chart_version }}.tgz"
         dest: *traefik_tgz
         mode: u=rw,go=
       when: not stat_traefik_tgz.stat.exists

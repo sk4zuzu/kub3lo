@@ -1,5 +1,5 @@
 ---
-- when: metallb_chart_enabled is truthy
+- when: metallb_chart_enabled | bool is true
   block:
     - name: stat MetalLB helm chart tarball
       ansible.builtin.stat:
