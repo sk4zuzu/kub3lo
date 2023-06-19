@@ -1,8 +1,10 @@
 ---
-- ansible.builtin.import_role: { name: master/wait }
+- ansible.builtin.import_role:
+    name: master/wait
 
 # set the "node_token" fact
-- ansible.builtin.import_role: { name: master/token }
+- ansible.builtin.import_role:
+    name: master/token
 
 - name: configure rke2-server service
   ansible.builtin.template:

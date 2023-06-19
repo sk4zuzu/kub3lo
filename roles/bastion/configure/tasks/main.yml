@@ -20,8 +20,8 @@
     state: directory
     mode: u+rwx,g=rx,o=
   loop:
-   - "{{ inventory_dir }}/.ssh"
-   - "{{ inventory_dir }}/.ssh/config.d"
+    - "{{ inventory_dir }}/.ssh"
+    - "{{ inventory_dir }}/.ssh/config.d"
 
 - name: generate bastion ssh main config
   ansible.builtin.template:

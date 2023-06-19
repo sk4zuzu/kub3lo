@@ -1,5 +1,6 @@
 ---
-- ansible.builtin.import_role: { name: master/wait }
+- ansible.builtin.import_role:
+    name: master/wait
 
 - name: configure kub3lo service
   ansible.builtin.template:

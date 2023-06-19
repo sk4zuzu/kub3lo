@@ -11,6 +11,7 @@
   roles:
     - role: python3/install
 
+
 - hosts: "{{ master_group | d('master') }}:{{ compute_group | d('compute') }}"
   gather_facts: true
   gather_subset: [network]
@@ -22,34 +23,37 @@
   post_tasks:
     - ansible.builtin.meta: flush_handlers
 
+
 - hosts: "{{ master_group | d('master') }}"
   tasks:
-    - name: "master/{{ k8s_distro }}/install"
+    - name: master/{{ k8s_distro }}/install
       ansible.builtin.include_role:
-        name: "master/{{ k8s_distro }}/install"
+        name: master/{{ k8s_distro }}/install
 
 - hosts: "{{ master_group | d('master') }}[0]"
   tasks:
-    - name: "master/{{ k8s_distro }}/bootstrap"
+    - name: master/{{ k8s_distro }}/bootstrap
       ansible.builtin.include_role:
-        name: "master/{{ k8s_distro }}/bootstrap"
+        name: master/{{ k8s_distro }}/bootstrap
 
 - hosts: "{{ master_group | d('master') }}[1:]"
   serial: 1
   tasks:
-    - name: "master/{{ k8s_distro }}/replicate"
+    - name: master/{{ k8s_distro }}/replicate
       ansible.builtin.include_role:
-        name: "master/{{ k8s_distro }}/replicate"
+        name: master/{{ k8s_distro }}/replicate
+
 
 - hosts: "{{ compute_group | d('compute') }}"
   tasks:
-    - name: "compute/{{ k8s_distro }}/install"
+    - name: compute/{{ k8s_distro }}/install
       ansible.builtin.include_role:
-        name: "compute/{{ k8s_distro }}/install"
+        name: compute/{{ k8s_distro }}/install
 
-    - name: "compute/{{ k8s_distro }}/bootstrap"
+    - name: compute/{{ k8s_distro }}/bootstrap
       ansible.builtin.include_role:
-        name: "compute/{{ k8s_distro }}/bootstrap"
+        name: compute/{{ k8s_distro }}/bootstrap
+
 
 - hosts: "{{ master_group | d('master') }}"
   roles:

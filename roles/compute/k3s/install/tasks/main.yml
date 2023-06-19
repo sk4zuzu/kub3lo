@@ -17,9 +17,11 @@
     - dest: /usr/local/bin/kubectl
       src: k3s
 
-- ansible.builtin.import_role: { name: registry/setup }
+- ansible.builtin.import_role:
+    name: registry/setup
 
-- ansible.builtin.import_role: { name: master/wait }
+- ansible.builtin.import_role:
+    name: master/wait
 
 - name: install kub3lo service
   ansible.builtin.template:

@@ -24,7 +24,8 @@
         enabled: true
 
     # set the "node_token" fact
-    - ansible.builtin.import_role: { name: master/token }
+    - ansible.builtin.import_role:
+        name: master/token
 
     - name: normalize rke2 service config
       ansible.builtin.template:

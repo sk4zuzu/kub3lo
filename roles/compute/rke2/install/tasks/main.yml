@@ -21,7 +21,7 @@
         src: *rke2_tgz
         dest: /usr/local/
 
-    - name: relaod systemd daemon
+    - name: reload systemd daemon
       ansible.builtin.systemd:
         daemon_reload: true
 
@@ -39,4 +39,5 @@
     force: true
     follow: false
 
-- ansible.builtin.import_role: { name: registry/setup }
+- ansible.builtin.import_role:
+    name: registry/setup
