@@ -1,7 +1,7 @@
 ---
 namespace: sk4zuzu
 name: kub3lo
-version: 0.0.3
+version: 0.0.4
 
 readme: README.md
 
@@ -25,4 +25,5 @@ build_ignore:
 - .ssh
 - .tmp
 - '*.ini'
+- ansible_collections
 - upgrade-*.sh
