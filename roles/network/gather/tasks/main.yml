@@ -2,17 +2,23 @@
 - name: gather master hostnames, fqdns and ipv4s
   ansible.builtin.set_fact:
     master_hosts: >-
-      {{ groups.master | map('extract', hostvars, ['inventory_hostname_short']) | list }}
+      {{ _master | map('extract', hostvars, ['inventory_hostname_short']) | list }}
     master_fqdns: >-
-      {{ groups.master | map('extract', hostvars, ['ansible_fqdn']) | list }}
+      {{ _master | map('extract', hostvars, ['ansible_fqdn']) | list }}
     master_ipv4s: >-
-      {{ groups.master | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | list }}
+      {{ _master | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | list }}
+  vars:
+    _master: >-
+      {{ groups[master_group | d('master')] }}
 
 - name: gather compute hostnames, fqdns and ipv4s
   ansible.builtin.set_fact:
     compute_hosts: >-
-      {{ groups.compute | map('extract', hostvars, ['inventory_hostname_short']) | list }}
+      {{ _compute | map('extract', hostvars, ['inventory_hostname_short']) | list }}
     compute_fqdns: >-
-      {{ groups.compute | map('extract', hostvars, ['ansible_fqdn']) | list }}
+      {{ _compute | map('extract', hostvars, ['ansible_fqdn']) | list }}
     compute_ipv4s: >-
-      {{ groups.compute | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | list }}
+      {{ _compute | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | list }}
+  vars:
+    _compute: >-
+      {{ groups[compute_group | d('compute')] }}
