@@ -9,12 +9,12 @@ export
 
 .PHONY: all
 
-all: kub3lo
+all: deploy
 
-.PHONY: kub3lo
+.PHONY: deploy
 
-kub3lo:
-	cd $(SELF)/ && ansible-playbook -v -i $(INVENTORY) kub3lo.yml
+deploy:
+	cd $(SELF)/ && ansible-playbook -v -i $(INVENTORY) sk4zuzu.kub3lo.$@
 
 .PHONY: proxy
 
