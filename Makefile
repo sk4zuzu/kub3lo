@@ -3,7 +3,7 @@ SELF  := $(patsubst %/,%,$(dir $(abspath $(firstword $(MAKEFILE_LIST)))))
 
 I         ?= $(SELF)/kub3lo.ini
 INVENTORY ?= $(I)
-NAME      := $(shell grep -oP '^cluster_name\s*=\s*\K\w+$$' $(INVENTORY))
+NAME      := $(shell awk -F '[=:][[:space:]]*' '/[[:space:]]*cluster_name[[:space:]]*[=:]/ { print $$2 }' $(INVENTORY))
 
 export
 
