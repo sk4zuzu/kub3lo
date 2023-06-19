@@ -37,16 +37,16 @@ ssh-%:
 
 .PHONY: metallb traefik
 
-metallb: METALLB_CHART_VERSION ?= 0.12.1
+metallb: METALLB_CHART_VERSION ?= 0.13.9
 metallb:
-	cd $(SELF)/ && ANSIBLE_ROLES_PATH=$(SELF)/addons/ ansible \
+	cd $(SELF)/ && ANSIBLE_ROLES_PATH=$(SELF)/roles/ ansible \
 	-e metallb_chart_version=$(METALLB_CHART_VERSION) \
-	-m include_role -a name=metallb/deploy \
+	-m include_role -a name=addons/metallb/deploy \
 	-i $(INVENTORY) master
 
-traefik: TRAEFIK_CHART_VERSION ?= 10.23.0
+traefik: TRAEFIK_CHART_VERSION ?= 23.0.0
 traefik:
-	cd $(SELF)/ && ANSIBLE_ROLES_PATH=$(SELF)/addons/ ansible \
+	cd $(SELF)/ && ANSIBLE_ROLES_PATH=$(SELF)/roles/ ansible \
 	-e traefik_chart_version=$(TRAEFIK_CHART_VERSION) \
-	-m include_role -a name=traefik/deploy \
+	-m include_role -a name=addons/traefik/deploy \
 	-i $(INVENTORY) master
