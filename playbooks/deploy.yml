@@ -1,5 +1,7 @@
 ---
 - hosts: "{{ bastion_group | d('bastion') }}"
+  collections:
+    - sk4zuzu.kub3lo
   roles:
     - role: bastion/configure
       delegate_to: localhost
@@ -8,6 +10,8 @@
 
 - hosts: "{{ master_group | d('master') }}:{{ compute_group | d('compute') }}"
   strategy: linear
+  collections:
+    - sk4zuzu.kub3lo
   roles:
     - role: python3/install
 
@@ -15,6 +19,8 @@
 - hosts: "{{ master_group | d('master') }}:{{ compute_group | d('compute') }}"
   gather_facts: true
   gather_subset: [network]
+  collections:
+    - sk4zuzu.kub3lo
   roles:
     - role: packages/install
     - role: network/gather
@@ -25,12 +31,16 @@
 
 
 - hosts: "{{ master_group | d('master') }}"
+  collections:
+    - sk4zuzu.kub3lo
   tasks:
     - name: master/{{ k8s_distro }}/install
       ansible.builtin.include_role:
         name: master/{{ k8s_distro }}/install
 
 - hosts: "{{ master_group | d('master') }}[0]"
+  collections:
+    - sk4zuzu.kub3lo
   tasks:
     - name: master/{{ k8s_distro }}/bootstrap
       ansible.builtin.include_role:
@@ -38,6 +48,8 @@
 
 - hosts: "{{ master_group | d('master') }}[1:]"
   serial: 1
+  collections:
+    - sk4zuzu.kub3lo
   tasks:
     - name: master/{{ k8s_distro }}/replicate
       ansible.builtin.include_role:
@@ -45,6 +57,8 @@
 
 
 - hosts: "{{ compute_group | d('compute') }}"
+  collections:
+    - sk4zuzu.kub3lo
   tasks:
     - name: compute/{{ k8s_distro }}/install
       ansible.builtin.include_role:
@@ -56,6 +70,8 @@
 
 
 - hosts: "{{ master_group | d('master') }}"
+  collections:
+    - sk4zuzu.kub3lo
   roles:
     - role: addons/metallb/deploy
       tags: [addons]
