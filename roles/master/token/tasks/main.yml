@@ -1,6 +1,6 @@
 ---
 - name: read node token
-  delegate_to: "{{ groups.master[0] }}"
+  delegate_to: "{{ groups[master_group | d('master')][0] }}"
   run_once: true
   ansible.builtin.slurp:
     path: "/var/lib/rancher/{{ k8s_distro }}/server/node-token"
