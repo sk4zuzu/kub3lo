@@ -39,4 +39,4 @@
     force: true
     follow: false
 
-- ansible.builtin.import_role: { name: registry }
+- ansible.builtin.import_role: { name: registry/setup }
