@@ -1,10 +1,10 @@
 ---
 - name: boostrap python3 intepreter
-  ansible.builtin.script: "{{ playbook_dir }}/roles/python3/package/install/templates/python3.sh"
-  args:
+  ansible.builtin.script:
+    cmd: python3.sh
     executable: /bin/bash
     creates: /usr/bin/python3
-  register: script_python3
-  until: script_python3 is success
+  register: script
+  until: script is success
   retries: 12
   delay: 5
