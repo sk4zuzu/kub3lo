@@ -34,14 +34,3 @@ b become:
 ssh-%:
 	@echo NOTICE: if you have complex hostnames use "\"ssh -F .ssh/config <tab>\"" auto-completion instead
 	@ssh -F $(SELF)/.ssh/config $* $(BECOME_ROOT)
-
-.PHONY: build publish
-
-build:
-	ansible-galaxy collection build --force --verbose
-
-publish: build
-	shopt -qs failglob && \
-	ansible-galaxy collection publish \
-	"$$(ls -1 $(SELF)/sk4zuzu-kub3lo-[0-9].[0-9].[0-9].tar.gz | sort --version-sort | tail -n1)" \
-	--api-key="$$(cat $(SELF)/.galaxy-key)"
