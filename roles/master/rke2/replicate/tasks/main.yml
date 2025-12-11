@@ -8,7 +8,7 @@
 
 - name: configure rke2-server service
   ansible.builtin.template:
-    src: etc/rancher/rke2/config.yaml.j2
+    src: config.yaml
     dest: /etc/rancher/rke2/config.yaml
     mode: u=rw,go=
   vars:

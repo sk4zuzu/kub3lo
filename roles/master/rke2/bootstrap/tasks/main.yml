@@ -11,7 +11,7 @@
   block:
     - name: configure rke2-server service
       ansible.builtin.template:
-        src: etc/rancher/rke2/config.yaml-initial.j2
+        src: initial-config.yaml
         dest: /etc/rancher/rke2/config.yaml
         mode: u=rw,go=
       vars:
@@ -29,7 +29,7 @@
 
     - name: normalize rke2 service config
       ansible.builtin.template:
-        src: etc/rancher/rke2/config.yaml.j2
+        src: config.yaml
         dest: /etc/rancher/rke2/config.yaml
         mode: u=rw,go=
       vars:

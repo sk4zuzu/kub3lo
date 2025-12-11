@@ -15,7 +15,6 @@ Host {{ cluster_name }}-proxy
   StrictHostKeyChecking no
   UserKnownHostsFile /dev/null
   ForwardAgent yes
-  LocalForward 6969 {{ hostvars[_master[0]].ansible_host | d(_master[0]) }}:6969
 
 {% set _compute = groups[compute_group | d('compute')] %}
 

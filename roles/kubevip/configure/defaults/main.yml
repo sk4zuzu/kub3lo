@@ -1,0 +1,4 @@
+---
+kubevip_vip_interface: eth0
+kubevip_vip_subnet: 32
+kubevip_version: "1.0.2"

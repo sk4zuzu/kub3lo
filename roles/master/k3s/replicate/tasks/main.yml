@@ -4,7 +4,7 @@
 
 - name: configure kub3lo service
   ansible.builtin.template:
-    src: etc/conf.d/kub3lo.j2
+    src: kub3lo
     dest: /etc/conf.d/kub3lo
     mode: u=rwx,go=rx
 
@@ -18,14 +18,14 @@
           ping > ping_max { exit }
           /level=debug/ && /ping/ { print $0 " " ping++ "/" ping_max; next }
           { ping = 1; print }
-      ansible.builtin.shell: |
-        set -o errexit -o pipefail
-        timeout 120s /usr/local/bin/k3s server \
-        --debug \
-        --server https://kub3lo-api:6969 \
-        --node-taint CriticalAddonsOnly=true:NoExecute \
-        |& awk "$AWK_SCRIPT"
-      args:
+      ansible.builtin.shell:
+        cmd: |
+          set -o errexit -o pipefail
+          timeout 120s /usr/local/bin/k3s server \
+          --debug \
+          --server https://{{ kubevip_address }}:6443 \
+          --node-taint CriticalAddonsOnly=true:NoExecute \
+          |& awk "$AWK_SCRIPT"
         executable: /bin/bash
         creates: /etc/rancher/k3s/k3s.yaml
       register: shell_join_k3s
@@ -38,18 +38,18 @@
         failed_result: "{{ ansible_failed_result }}"
 
     - name: cleanup local k3s (to enable manual retry)
-      ansible.builtin.shell: |
-        set -o errexit -o pipefail
+      ansible.builtin.shell:
+        cmd: |
+          set -o errexit -o pipefail
 
-        rm -r /etc/rancher/k3s/
+          rm -r /etc/rancher/k3s/
 
-        find /var/lib/rancher/k3s/ \( -type f -or -type l \) -and -not -name 'k3s-airgap-images-*.tar' -print0 \
-        | xargs -0r -n1 rm
+          find /var/lib/rancher/k3s/ \( -type f -or -type l \) -and -not -name 'k3s-airgap-images-*.tar' -print0 \
+          | xargs -0r -n1 rm
 
-        find /var/lib/rancher/k3s/ -type d -print0 \
-        | sort -zr \
-        | xargs -0r -n1 rmdir --ignore-fail-on-non-empty
-      args:
+          find /var/lib/rancher/k3s/ -type d -print0 \
+          | sort -zr \
+          | xargs -0r -n1 rmdir --ignore-fail-on-non-empty
         executable: /bin/bash
 
     - name: raise original error

@@ -14,6 +14,10 @@
   loop:
     - dest: /usr/local/bin/k3s
       src: "k3s-{{ k3s_release }}"
+    - dest: /usr/local/bin/ctr
+      src: k3s
+    - dest: /usr/local/bin/crictl
+      src: k3s
     - dest: /usr/local/bin/kubectl
       src: k3s
 
@@ -25,7 +29,7 @@
 
 - name: install kub3lo service
   ansible.builtin.template:
-    src: etc/init.d/kub3lo.j2
+    src: kub3lo
     dest: /etc/init.d/kub3lo
     mode: u=rwx,go=rx
 

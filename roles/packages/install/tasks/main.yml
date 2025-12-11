@@ -2,7 +2,6 @@
 - name: install extra packages
   ansible.builtin.package:
     name: "{{ _packages[ansible_os_family] }}"
-    state: present
   vars:
     _packages:
       Alpine:
@@ -13,7 +12,7 @@
         - bash
         - tar
         - zstd
-  register: package_extra
-  until: package_extra is success
+  register: package
+  until: package is success
   retries: 12
   delay: 5

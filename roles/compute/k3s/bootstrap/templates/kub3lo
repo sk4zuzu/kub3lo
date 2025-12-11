@@ -1,0 +1,2 @@
+K3S_EXEC="agent"
+K3S_OPTS="--server https://{{ kubevip_address }}:6443 --token '{{ k3s_node_token }}'"

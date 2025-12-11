@@ -1,8 +1,7 @@
 ---
-server: https://kub3lo-disco:8686
+server: "https://{{ kubevip_address }}:9345"
 token: "{{ rke2_node_token }}"
 tls-san:
-  - kub3lo-disco
-  - kub3lo-api
+  - "{{ kubevip_address }}"
 node-taint:
   - CriticalAddonsOnly=true:NoExecute

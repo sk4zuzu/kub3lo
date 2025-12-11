@@ -3,12 +3,12 @@
   delegate_to: "{{ groups[master_group | d('master')][0] }}"
   run_once: true
   ansible.builtin.uri:
-    url: "https://kub3lo-api:6969/readyz"
+    url: "https://{{ kubevip_address }}:6443/readyz"
     client_key: "/var/lib/rancher/{{ k8s_distro }}/server/tls/client-admin.key"
     client_cert: "/var/lib/rancher/{{ k8s_distro }}/server/tls/client-admin.crt"
     validate_certs: false
     status_code: 200
-  register: uri_k8s_api_ready
-  until: uri_k8s_api_ready.status == 200
+  register: uri
+  until: uri.status == 200
   retries: 12
   delay: 5

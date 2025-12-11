@@ -9,7 +9,7 @@ To pre-create a pool of VMs for `kub3lo` you can try: [sk4zuzu/vm-pool](https://
 
 You can find packer scripts that pre-create airgapped images for `kub3lo` here: [sk4zuzu/vm-pool/packer/kub3lo](https://github.com/sk4zuzu/vm-pool/tree/master/packer/kub3lo) :ok\_hand:.
 
-## 2. DEPLOY A `rke2` CLUSTER (UBUNTU 20.04)
+## 2. DEPLOY A `rke2` CLUSTER (UBUNTU 25.04)
 
 Edit `kub3lo.ini` file:
 
@@ -19,6 +19,8 @@ cluster_name=k2
 ansible_user=ubuntu
 ansible_python_interpreter=/usr/bin/python3
 k8s_distro=rke2
+kubevip_vip_interface=br0
+kubevip_address=10.2.41.86
 
 [bastion]
 k2 ansible_host=10.2.41.10
@@ -40,7 +42,7 @@ Run provisioning:
 $ make
 ```
 
-## 3. DEPLOY A `k3s` CLUSTER (ALPINE 3.16.0)
+## 3. DEPLOY A `k3s` CLUSTER (ALPINE 3.22.2)
 
 Edit `kub3lo.ini` file:
 
@@ -50,6 +52,8 @@ cluster_name=k3
 ansible_user=alpine
 ansible_python_interpreter=/usr/bin/python3
 k8s_distro=k3s
+kubevip_vip_interface=br0
+kubevip_address=10.2.42.86
 
 [bastion]
 k3 ansible_host=10.2.42.10

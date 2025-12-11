@@ -1,0 +1,3 @@
+---
+server: "https://{{ kubevip_address }}:9345"
+token: "{{ rke2_node_token }}"

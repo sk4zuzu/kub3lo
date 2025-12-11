@@ -1,0 +1,12 @@
+---
+- name: create manifests directory
+  ansible.builtin.file:
+    path: "/var/lib/rancher/{{ k8s_distro }}/server/manifests/"
+    state: directory
+    mode: u=rwx,g=rx,o=
+
+- name: render kubevip manifest
+  ansible.builtin.template:
+    src: kube-vip-rbac.yaml
+    dest: "/var/lib/rancher/{{ k8s_distro }}/server/manifests/kube-vip-rbac.yaml"
+    mode: u=rw,go=r

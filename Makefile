@@ -16,11 +16,6 @@ all: deploy
 deploy:
 	cd $(SELF)/ && ansible-playbook -v -i $(INVENTORY) sk4zuzu.kub3lo.$@
 
-.PHONY: proxy
-
-proxy:
-	ssh -F $(SELF)/.ssh/config $(NAME)-proxy -N
-
 .PHONY: kc kubeconfig
 
 kc kubeconfig:

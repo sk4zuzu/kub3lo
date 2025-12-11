@@ -18,7 +18,7 @@
       vars:
         update:
           cluster:
-            server: https://localhost:6969
+            server: "https://{{ kubevip_address }}:6443"
 
     - name: update kubeconfig
       ansible.builtin.set_fact:

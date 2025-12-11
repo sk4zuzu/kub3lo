@@ -24,15 +24,13 @@
   roles:
     - role: packages/install
     - role: network/gather
-    - role: haproxy/install
-    - role: haproxy/configure
-  post_tasks:
-    - ansible.builtin.meta: flush_handlers
 
 
 - hosts: "{{ master_group | d('master') }}"
   collections:
     - sk4zuzu.kub3lo
+  roles:
+    - role: kubevip/configure
   tasks:
     - name: master/{{ k8s_distro }}/install
       ansible.builtin.include_role:

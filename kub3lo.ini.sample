@@ -4,6 +4,8 @@ ansible_user=alpine
 ansible_python_interpreter=/usr/bin/python3
 registry=http://10.2.11.1:5000
 k8s_distro=k3s
+kubevip_vip_interface=br0
+kubevip_address=10.2.42.86
 
 [bastion]
 k3 ansible_host=10.2.42.10
