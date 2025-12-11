@@ -1,9 +1,0 @@
----
-- name: install haproxy
-  ansible.builtin.package:
-    name: haproxy
-    state: present
-  register: package_haproxy
-  until: package_haproxy is success
-  retries: 12
-  delay: 5
